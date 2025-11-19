@@ -9,6 +9,7 @@ import { AuthModal } from "./components/auth/AuthModal";
 import { Product } from "./components/shop/ProductCard";
 import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
+import { apiConfig } from "./config/api";
 
 
 export default function App() {
@@ -33,7 +34,7 @@ export default function App() {
   
 const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/products/");
+        const response = await fetch(apiConfig.endpoints.products);
         if (!response.ok) throw new Error("Failed to fetch products");
         const data: Product[] = await response.json();
 
@@ -56,7 +57,7 @@ const fetchProducts = async () => {
 
   const fetchAllOrders = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/orders/");
+      const response = await fetch(apiConfig.endpoints.orders);
       if (!response.ok) throw new Error("Failed to fetch orders");
       const data = await response.json();
       setAllOrders(data);
@@ -68,7 +69,7 @@ const fetchProducts = async () => {
 
   const fetchUserStats = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/stats/users/");
+      const response = await fetch(apiConfig.endpoints.statsUsers);
       if (!response.ok) throw new Error("Failed to fetch user stats");
       const data = await response.json();
       setUserStats(data);
@@ -80,7 +81,7 @@ const fetchProducts = async () => {
 
   const fetchSalesStats = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/stats/sales/");
+      const response = await fetch(apiConfig.endpoints.statsSales);
       if (!response.ok) throw new Error("Failed to fetch sales stats");
       const data = await response.json();
       setSalesStats(data);

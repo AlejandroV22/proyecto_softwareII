@@ -35,6 +35,7 @@ import {
 import { Package, DollarSign, ShoppingCart, Users, TrendingUp, Calendar, Search, Filter, ChevronDown, ChevronRight } from "lucide-react";
 import { Product } from "../shop/ProductCard";
 import { VeganStoreReport } from "./VeganStoreReport";
+import { apiConfig } from "../../config/api";
 
 interface Sale {
   id: string;
@@ -143,7 +144,7 @@ export function AdminDashboard({ products, sales, userStats, salesStats, onAddPr
         [orderId]: newStatus
       }));
 
-      const response = await fetch("http://localhost:8000/api/orders/update-status/", {
+      const response = await fetch(apiConfig.endpoints.ordersUpdateStatus, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

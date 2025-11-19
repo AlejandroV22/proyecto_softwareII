@@ -24,6 +24,7 @@ import {
   Legend,
 } from "recharts";
 import { AlertCircle, TrendingUp, Package, DollarSign } from "lucide-react";
+import { apiConfig } from "../../config/api";
 
 interface VeganStoreData {
   titulo: string;
@@ -47,7 +48,7 @@ interface VeganStoreReportProps {
   apiUrl?: string;
 }
 
-export function VeganStoreReport({ apiUrl = "http://localhost:8000/api/tienda-vegana" }: VeganStoreReportProps) {
+export function VeganStoreReport({ apiUrl = apiConfig.endpoints.tiendaVegana }: VeganStoreReportProps) {
   const [data, setData] = useState<VeganStoreData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
