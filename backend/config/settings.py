@@ -52,6 +52,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://proyecto-softwareii-1.onrender.com/",
 ]
 CORS_ALLOW_CREDENTIALS = True
 
