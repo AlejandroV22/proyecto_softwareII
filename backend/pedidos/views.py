@@ -10,6 +10,10 @@ import json
 from .models import Pedido, Producto, DetallePedido
 from decimal import Decimal
 from datetime import datetime, timedelta
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import PedidoExportSerializer
 
 
 @csrf_exempt  
@@ -414,3 +418,84 @@ def update_order_status(request):
     
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
+
+
+@api_view(['GET'])
+def export_orders(request):
+    """
+    Exporta todas las órdenes en formato JSON.
+    
+    GET /api/orders/export/
+    
+    Parámetros opcionales de consulta:
+    - username: Filtrar órdenes de un usuario específico
+    - estado: Filtrar por estado (pendiente, completado, cancelado)
+    - fecha_inicio: Filtrar órdenes posteriores a esta fecha (formato: YYYY-MM-DD)
+    - fecha_fin: Filtrar órdenes anteriores a esta fecha (formato: YYYY-MM-DD)
+    
+    Retorna array de órdenes:
+    [
+        {
+            "id": int,
+            "usuario": int,
+            "usuario_username": str,
+            "usuario_email": str,
+            "usuario_nombre": str,
+            "usuario_apellido": str,
+            "usuario_nombre_completo": str,
+            "fecha_pedido": datetime,
+            "estado": str,
+            "total": str,
+            "detalles": [...]
+        }
+    ]
+    """
+    try:
+        # Obtener parámetros de filtro
+        username = request.query_params.get('username')
+        estado = request.query_params.get('estado')
+        fecha_inicio = request.query_params.get('fecha_inicio')
+        fecha_fin = request.query_params.get('fecha_fin')
+        
+        # Construir queryset con filtros
+        queryset = Pedido.objects.all()
+        
+        if username:
+            queryset = queryset.filter(usuario__username__icontains=username)
+        
+        if estado:
+            queryset = queryset.filter(estado__iexact=estado)
+        
+        if fecha_inicio:
+            try:
+                fecha_inicio = datetime.strptime(fecha_inicio, '%Y-%m-%d').date()
+                queryset = queryset.filter(fecha_pedido__date__gte=fecha_inicio)
+            except ValueError:
+                return Response(
+                    {"error": "Invalid fecha_inicio format. Use YYYY-MM-DD"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        
+        if fecha_fin:
+            try:
+                fecha_fin = datetime.strptime(fecha_fin, '%Y-%m-%d').date()
+                queryset = queryset.filter(fecha_pedido__date__lte=fecha_fin)
+            except ValueError:
+                return Response(
+                    {"error": "Invalid fecha_fin format. Use YYYY-MM-DD"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        
+        # Ordenar por fecha descendente
+        queryset = queryset.order_by('-fecha_pedido')
+        
+        # Serializar todas las órdenes (sin paginación)
+        serializer = PedidoExportSerializer(queryset, many=True)
+        
+        return Response(serializer.data)
+    
+    except Exception as e:
+        return Response(
+            {"error": f"Error exporting orders: {str(e)}"},
+            status=status.HTTP_400_BAD_REQUEST
+        )

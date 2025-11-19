@@ -34,6 +34,7 @@ import {
 } from "recharts";
 import { Package, DollarSign, ShoppingCart, Users, TrendingUp, Calendar, Search, Filter, ChevronDown, ChevronRight } from "lucide-react";
 import { Product } from "../shop/ProductCard";
+import { VeganStoreReport } from "./VeganStoreReport";
 
 interface Sale {
   id: string;
@@ -354,6 +355,7 @@ export function AdminDashboard({ products, sales, userStats, salesStats, onAddPr
         <TabsList>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
+          <TabsTrigger value="tienda-vegana">Tienda Vegana</TabsTrigger>
         </TabsList>
 
         <TabsContent value="analytics" className="space-y-4">
@@ -786,6 +788,10 @@ export function AdminDashboard({ products, sales, userStats, salesStats, onAddPr
               </Card>
             ))}
           </div>
+        </TabsContent>
+
+        <TabsContent value="tienda-vegana" className="space-y-4">
+          <VeganStoreReport />
         </TabsContent>
       </Tabs>
     </div>
