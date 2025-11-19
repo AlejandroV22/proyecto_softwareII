@@ -271,7 +271,7 @@ export function UserShop({ products, cart, onAddToCart, userOrders, isAuthentica
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
-                      <ComposedChart data={spendingData}>
+                      <ComposedChart data={[...spendingData].reverse()}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="month" />
                         <YAxis />

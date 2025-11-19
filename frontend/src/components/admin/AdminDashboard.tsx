@@ -364,7 +364,7 @@ export function AdminDashboard({ products, sales, userStats, salesStats, onAddPr
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={monthlyData}>
+                <AreaChart data={[...monthlyData].reverse()}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
@@ -738,7 +738,7 @@ export function AdminDashboard({ products, sales, userStats, salesStats, onAddPr
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <ComposedChart data={dailyData}>
+                <ComposedChart data={[...dailyData].reverse()}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="day" />
                   <YAxis />
