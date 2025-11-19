@@ -206,7 +206,7 @@ const fetchProducts = async () => {
     }
     
     try {
-    const response = await fetch("http://localhost:8000/api/orders/create/", {
+    const response = await fetch(apiConfig.endpoints.ordersCreate, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -269,13 +269,13 @@ const fetchProducts = async () => {
 
       if (editingProduct) {
         // editar producto
-        response = await fetch(`http://localhost:8000/api/products/edit/${editingProduct.id}/`, {
+        response = await fetch(apiConfig.endpoints.productsEdit(editingProduct.id), {
           method: "POST",
           body: formData
         });
       } else {
         // crear producto
-        response = await fetch("http://localhost:8000/api/products/create/", {
+        response = await fetch(apiConfig.endpoints.productsCreate, {
           method: "POST",
           body: formData
         });
@@ -322,7 +322,7 @@ const fetchProducts = async () => {
       return;
     }
     try {
-      const res = await fetch(`http://localhost:8000/api/orders/user/${encodeURIComponent(username)}/`);
+      const res = await fetch(apiConfig.endpoints.ordersByUser(username));
       if (!res.ok) {
         console.error("Failed to fetch user orders", await res.text());
         setUserOrders([]);

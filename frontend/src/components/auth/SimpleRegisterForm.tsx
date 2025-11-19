@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
+import { apiConfig } from "../../config/api";
 
 interface SimpleRegisterFormProps {
   onRegister: (username: string, email: string) => void;
@@ -55,7 +56,7 @@ export function SimpleRegisterForm({ onRegister, onSwitchToLogin }: SimpleRegist
     setIsLoading(true);
 
     try {
-    const response = await fetch("http://localhost:8000/api/register/", {
+    const response = await fetch(apiConfig.endpoints.register, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

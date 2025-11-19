@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
+import { apiConfig } from "../../config/api";
 
 interface SimpleLoginFormProps {
   onLogin: (username: string, userType: 'user' | 'admin') => void;
@@ -29,7 +30,7 @@ export function SimpleLoginForm({ onLogin, onSwitchToRegister }: SimpleLoginForm
     setIsLoading(true);
 
     try {
-    const response = await fetch("http://localhost:8000/api/login/", {
+    const response = await fetch(apiConfig.endpoints.login, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
