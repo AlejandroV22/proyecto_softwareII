@@ -104,12 +104,12 @@ const fetchProducts = async () => {
     fetchUserStats();
     fetchSalesStats();
 
-    // Auto-refresh orders and stats every 3 seconds (but not products)
+    // Auto-refresh orders and stats every 30 seconds (but not products)
     const refreshInterval = setInterval(() => {
       fetchAllOrders();
       fetchUserStats();
       fetchSalesStats();
-    }, 3000); // 3 seconds
+    }, 30000); // 30 seconds
 
     return () => clearInterval(refreshInterval);
   }, []);
