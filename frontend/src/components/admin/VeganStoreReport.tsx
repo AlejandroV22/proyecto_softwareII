@@ -21,10 +21,18 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
 } from "recharts";
 import { AlertCircle, TrendingUp, Package, DollarSign } from "lucide-react";
 import { apiConfig } from "../../config/api";
+
+interface VeganStoreDetail {
+  item_id: number;
+  producto_nombre: string;
+  proveedor_nombre: string;
+  stock: number;
+  precio_unitario: string;
+  valor_total_item: string;
+}
 
 interface VeganStoreData {
   titulo: string;
@@ -32,16 +40,9 @@ interface VeganStoreData {
   resumen: {
     total_skus: number;
     total_unidades_stock: number;
-    valor_total_inventario: string;
+    valor_total_inventario: number | string;
   };
-  detalles: Array<{
-    item_id: number;
-    producto_nombre: string;
-    proveedor_nombre: string;
-    stock: number;
-    precio_unitario: string;
-    valor_total_item: string;
-  }>;
+  detalle: VeganStoreDetail[];
 }
 
 interface VeganStoreReportProps {
@@ -57,6 +58,9 @@ export function VeganStoreReport({ apiUrl = apiConfig.endpoints.tiendaVegana }: 
     const fetchData = async () => {
       try {
         setLoading(true);
+        if (!apiUrl) {
+          throw new Error("API URL no configurada para Tienda Vegana");
+        }
         const response = await fetch(apiUrl);
         if (!response.ok) {
           throw new Error("Failed to fetch vegan store data");
@@ -66,7 +70,6 @@ export function VeganStoreReport({ apiUrl = apiConfig.endpoints.tiendaVegana }: 
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error loading data");
-        setLoading(false);
       } finally {
         setLoading(false);
       }
@@ -74,6 +77,17 @@ export function VeganStoreReport({ apiUrl = apiConfig.endpoints.tiendaVegana }: 
 
     fetchData();
   }, [apiUrl]);
+
+  if (!apiUrl) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          VITE_TIENDA_VEGANA_URL no está configurada en las variables de entorno
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   if (loading) {
     return (
@@ -102,7 +116,7 @@ export function VeganStoreReport({ apiUrl = apiConfig.endpoints.tiendaVegana }: 
   }
 
   // Prepare data for charts
-  const stockBySupplier = data.detalles.reduce((acc, item) => {
+  const stockBySupplier = data.detalle.reduce((acc, item) => {
     const existing = acc.find(s => s.proveedor === item.proveedor_nombre);
     if (existing) {
       existing.stock += item.stock;
@@ -117,15 +131,15 @@ export function VeganStoreReport({ apiUrl = apiConfig.endpoints.tiendaVegana }: 
     return acc;
   }, [] as Array<{ proveedor: string; stock: number; count: number }>);
 
-  const stockByProduct = data.detalles.map(item => ({
+  const stockByProduct = data.detalle.map(item => ({
     name: item.producto_nombre.length > 25 ? item.producto_nombre.substring(0, 25) + "..." : item.producto_nombre,
     stock: item.stock,
   }));
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d"];
 
-  const formatCurrency = (value: string) => {
-    const num = parseFloat(value);
+  const formatCurrency = (value: string | number) => {
+    const num = typeof value === 'string' ? parseFloat(value) : value;
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",
@@ -247,7 +261,7 @@ export function VeganStoreReport({ apiUrl = apiConfig.endpoints.tiendaVegana }: 
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.detalles.map((item, index) => (
+                {data.detalle.map((item, index) => (
                   <TableRow key={index}>
                     <TableCell className="font-medium">{item.item_id}</TableCell>
                     <TableCell>{item.producto_nombre}</TableCell>
