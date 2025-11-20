@@ -7,6 +7,9 @@
 // @ts-ignore
 const API_URL = (import.meta.env.VITE_API_URL || "http://localhost:8000/api") as string;
 
+// @ts-ignore
+const TIENDA_VEGANA_URL = (import.meta.env.VITE_TIENDA_VEGANA_URL || `${API_URL}/tienda-vegana`) as string;
+
 export const apiConfig = {
   baseUrl: API_URL,
   endpoints: {
@@ -21,7 +24,7 @@ export const apiConfig = {
     ordersByUser: (username: string) => `${API_URL}/orders/user/${encodeURIComponent(username)}/`,
     statsUsers: `${API_URL}/stats/users/`,
     statsSales: `${API_URL}/stats/sales/`,
-    tiendaVegana: `${API_URL}/tienda-vegana`,
+    tiendaVegana: TIENDA_VEGANA_URL,
   },
 };
 
